@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bankroll</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bankroll">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1614" media="(prefers-color-scheme: dark)">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header><h1 id="title">Bankroll tracker</h1></header>
+<p id="error" role="alert" hidden></p>
+<main id="main"></main>
+<nav aria-label="Sections">
+  <button data-view="home">Home</button>
+  <button data-view="history">History</button>
+  <button data-view="games">Games</button>
+  <button data-view="cruises">Cruises</button>
+  <button data-view="settings">Settings</button>
+</nav>
+<input type="file" id="restore-file" class="vh" tabindex="-1" aria-hidden="true">
+<div id="sheet" hidden></div>
+<noscript>This app needs JavaScript turned on.</noscript>
+<script type="module" src="app.js"></script>
+</body>
+</html>
