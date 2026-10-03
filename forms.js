@@ -68,6 +68,10 @@ export function openSheet({ title, body, submit = 'Save', onSubmit, onDelete = n
       err.textContent = e.message; err.hidden = false; err.scrollIntoView({ block: 'nearest' });
     }
   };
+  form.addEventListener('click', ev => {
+    const b = ev.target.closest('[data-fill]');
+    if (b) form.elements[b.dataset.fill].value = b.dataset.value;
+  });
   if (onOpen) onOpen(form);
   const first = form.querySelector('input:not([type=hidden]):not([type=radio]):not([type=datetime-local]), textarea');
   if (first) first.focus();
@@ -182,7 +186,8 @@ export function lockForm(entry, cash, done, onDelete) {
 const gameFields = (games, slotNames, game, slotName) =>
   field('Game', select('game', games.map(g => [g, g]), game))
   + `<div data-only-game="Slots">${field('Slot name', textIn('slotName', slotName || '', 'list="slot-names" maxlength="60" placeholder="Buffalo Gold"'), 'Optional')}
-     <datalist id="slot-names">${slotNames.map(n => `<option value="${esc(n)}">`).join('')}</datalist></div>`;
+     <datalist id="slot-names">${slotNames.map(n => `<option value="${esc(n)}">`).join('')}</datalist>
+     ${slotNames.length ? `<div class="quick" aria-label="Recent slot names">${slotNames.slice(0, 8).map(n => `<button type="button" data-fill="slotName" data-value="${esc(n)}">${esc(n)}</button>`).join('')}</div>` : ''}</div>`;
 const syncGame = form => {
   const g = form.elements.game.value;
   form.querySelectorAll('[data-only-game]').forEach(el => { el.hidden = el.dataset.onlyGame !== g; });

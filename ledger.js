@@ -59,12 +59,19 @@ export function compute(cruise) {
   const out = {
     balances: bal, holdings: 0, inPlay: 0, outOfPocket: 0, tripNet: 0, gamblingNet: 0, untracked: 0,
     leakage: { fees: 0, spending: 0, unknown: 0, total: 0 },
-    byGame: [], activeSession: null, oopByDay: {}, gaps: [], snapshots: {},
+    byGame: [], byDay: [], activeSession: null, oopByDay: {}, gaps: [], snapshots: {},
   };
   const oop = (ts, amt) => {
     out.outOfPocket += amt;
     const k = dayKey(ts);
     out.oopByDay[k] = (out.oopByDay[k] || 0) + amt;
+  };
+
+  const day = ts => {
+    const k = dayKey(ts);
+    let d = out.byDay.find(x => x.day === k);
+    if (!d) { d = { day: k, net: 0, sessions: 0, ms: 0, untracked: 0, games: [] }; out.byDay.push(d); }
+    return d;
   };
 
   const events = [];
@@ -94,6 +101,11 @@ export function compute(cruise) {
         bal[en.cashOut.dest] += en.cashOut.amount;
         out.gamblingNet += sessionResult(en);
         addGame(out.byGame, en);
+        { // a session counts toward the day it started
+          const d = day(en.ts);
+          d.net += sessionResult(en); d.sessions += 1; d.ms += sessionMs(en);
+          addGame(d.games, en);
+        }
         break;
       case 'trueup':
         out.snapshots[en.id] = { ...bal };
@@ -105,7 +117,7 @@ export function compute(cruise) {
           if (gap === 0) continue;
           const tag = (en.tags && en.tags[bucket]) || 'unknown';
           out.gaps.push({ entryId: en.id, bucket, expected, counted, gap, tag });
-          if (tag === 'win' || tag === 'loss') { out.gamblingNet += gap; out.untracked += gap; }
+          if (tag === 'win' || tag === 'loss') { out.gamblingNet += gap; out.untracked += gap; const d = day(en.ts); d.net += gap; d.untracked += gap; }
           else if (tag === 'spending') out.leakage.spending -= gap;
           else out.leakage.unknown -= gap;
         }
@@ -116,6 +128,8 @@ export function compute(cruise) {
   out.holdings = bal.ship + bal.cash + bal.chips + bal.lockbox;
   out.tripNet = out.holdings + out.inPlay - out.outOfPocket;
   sortGames(out.byGame);
+  out.byDay.sort((a, b) => b.day.localeCompare(a.day));
+  for (const d of out.byDay) sortGames(d.games);
   return out;
 }
 

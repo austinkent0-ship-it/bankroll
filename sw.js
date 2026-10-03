@@ -1,5 +1,5 @@
 // Offline cache. Bump VERSION whenever any app file changes.
-const VERSION = 'cbt-v1';
+const VERSION = 'cbt-v2';
 const FILES = ['./', 'index.html', 'styles.css', 'app.js', 'views.js', 'forms.js', 'ledger.js', 'storage.js',
   'manifest.webmanifest', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 

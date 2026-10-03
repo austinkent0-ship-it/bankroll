@@ -11,6 +11,7 @@ const tone = c => (c > 0 ? 'up' : c < 0 ? 'down' : 'flat');
 const signed = c => `<span class="num ${tone(c)}">${formatMoney(c, { sign: true })}</span>`;
 const clock = ts => new Date(ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 const dayLabel = ts => new Date(ts).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+const keyLabel = k => { const [y, m, d] = k.split('-').map(Number); return dayLabel(new Date(y, m - 1, d).getTime()); };
 export const elapsed = ms => {
   const s = Math.max(0, Math.floor(ms / 1000));
   const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
@@ -164,7 +165,15 @@ export function games(state, cr) {
     <section class="card" id="games-card">${gamesTable(c.byGame)}
       ${c.untracked ? `<div class="row total"><span>Untracked, from true-ups</span>${signed(c.untracked)}</div>` : ''}
       <div class="row total"><span>Gambling net</span>${signed(c.gamblingNet)}</div>
-    </section>`;
+    </section>
+    <h1 class="page">By day</h1>
+    <div id="by-day" class="stack">${c.byDay.length ? c.byDay.map(d => `<section class="card">
+      <div class="row"><h2>${keyLabel(d.day)}</h2><strong>${signed(d.net)}</strong></div>
+      <p class="small">${d.sessions} ${d.sessions === 1 ? 'session' : 'sessions'}${d.ms ? ' · ' + formatDuration(d.ms) : ''}</p>
+      ${d.games.length ? gamesTable(d.games) : ''}
+      ${d.untracked ? `<div class="row"><span>Untracked, from true-ups</span>${signed(d.untracked)}</div>` : ''}
+    </section>`).join('') : '<section class="card"><p class="small">No finished sessions yet.</p></section>'}</div>
+    <p class="small">A session counts toward the day it started.</p>`;
 }
 
 export function cruises(state) {

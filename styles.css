@@ -106,6 +106,10 @@ button.link { all: unset; color: var(--gold); font-weight: 650; text-decoration:
 .notes time { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 4px; }
 .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--surface2); font-size: 13px; font-weight: 600; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.stack { display: grid; gap: 12px; }
+.quick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.quick button { min-height: 44px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface2); font-weight: 600; font-size: 15px; cursor: pointer; max-width: 100%; overflow-wrap: anywhere; }
+.quick button:active { filter: brightness(.92); }
 
 .card.list { padding: 14px 0 4px; gap: 0; }
 .card.list h2 { padding: 0 14px 8px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
